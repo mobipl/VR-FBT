@@ -1,0 +1,15 @@
+[server]
+ip="localhost"
+port=9000
+
+[camera]
+cam-index=[0]
+show-output=true
+
+[tracking]
+mode="single"
+smooth=true
+extra-keypoints=false
+
+[misc]
+joy-con-remote=false
