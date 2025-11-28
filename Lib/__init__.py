@@ -1,1 +1,1 @@
-__all__ = ['CLIKit', 'Clock', 'Json', 'Toml', 'OSCKit', 'AsyncCam']
+__all__ = ['CLIKit', 'Clock', 'Json', 'Toml', 'OSCKit', 'AsyncCam', 'Data']

@@ -10,6 +10,7 @@ show-output=true
 mode="single"
 smooth=true
 extra-keypoints=false
+Joint-Map = 'VRCHAT'
 
 [misc]
 joy-con-remote=false
