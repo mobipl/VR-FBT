@@ -10,11 +10,14 @@ class keypoint:
 
 		self.his = List()
 
+	def append_history(self):
+		self.his.append(self.pos)
+
 #____wrappers____
 def get_Joint_Map(name, Json_lib):
 	return Json_lib.File.load(f'Content/Joint-Maps/{name}.json')
 
-#____Optimized-math____
+#____Optimized-Math____
 @njit
 def midpoint(p1, p2):
 	mid = List()

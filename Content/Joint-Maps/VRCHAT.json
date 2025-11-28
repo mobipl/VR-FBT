@@ -1,28 +1,22 @@
 {
 	"Settings":{
-		"BlazePose-Fuse-Shoulder":true,
-		"BlazePose-Fuse-Hip":true,
-
-		"OpenPose-Fuse-Shoulder":false,
-		"OpenPose-Fuse-Hip":false
-
-		"OpenPose-Chest":1
-		"OpenPose-Mid-Hip":8
+		"Fuse-Shoulder":true,
+		"Fuse-Hip":true,
 	},
 
 	"KeyPoints":{
-		"R-Shoulder":[12,2],
-		"L-Shoulder":[11,5],
-		"R-Elbow":[14,3],
-		"L-Elbow":[13,6],
-		"R-Hip":[24,9],
-		"L-Hip":[23,12],
-		"R-Knee":[26,10],
-		"L-Knee":[25,13],
-		"R-Ankle":[28,11],
-		"L-Ankle":[27,10]
-		"R-Foot":[30,22],
-		"L-Foot":[29,19]
+		"R-Shoulder":12,
+		"L-Shoulder":11,
+		"R-Elbow":14,
+		"L-Elbow":13,
+		"R-Hip":24,
+		"L-Hip":23,
+		"R-Knee":26,
+		"L-Knee":25,
+		"R-Ankle":28,
+		"L-Ankle":27,
+		"R-Foot":30,
+		"L-Foot":29
 	},
 
 	"Trackers":{

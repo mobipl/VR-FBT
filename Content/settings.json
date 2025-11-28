@@ -5,8 +5,5 @@
 	"UDP_server":false,
 	"Live_switch":true,
 
-	"force_OpenPose":false,
-	"force_BlazePose":false,
-
 	"default_profile":"DEFAULT" 
 }
