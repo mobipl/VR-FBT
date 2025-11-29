@@ -1,3 +1,3 @@
 # VR-FBT
-<sub>Python-3.12</sub>
-**[WIP]**
+**[WIP]**<br>
+<sup>Using python 3.12</sup>
