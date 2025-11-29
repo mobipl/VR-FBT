@@ -3,6 +3,7 @@ import os
 
 print('Loading PyTorch')
 
+import torch_directml
 import torch
 import torchvision.transforms as T
 from Model.blazepose_landmark import BlazePoseLandmark
@@ -12,8 +13,9 @@ os.system('cls')
 class Pose:
 	def __init__(self):
 		self.model = BlazePoseLandmark()
-		det_checkpoint = torch.load('Model/blazepose_landmark.pth')
+		det_checkpoint = torch.load('Model/blazepose_landmark.pth', weights_only=True)
 		self.model.load_state_dict(det_checkpoint)
+		self.model.to(torch_directml.device())
 		self.model.eval()
 
 	def preprocess(self, img):
@@ -24,6 +26,5 @@ class Pose:
 	def process(self, tensor):
 		with torch.no_grad():
 			landmarks = model(tensor)
-			print(landmarks)
 
 		return landmarks
