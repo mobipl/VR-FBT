@@ -1,33 +1,29 @@
+#Fuck Tensorflow and its outdated converters
 import os
 
-os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+print('Loading PyTorch')
 
-print('Loading Tensorflow...')
-
-import tensorflow as tf
-import cv2
+import torch
+import torchvision.transforms as T
+from Model.blazepose_landmark import BlazePoseLandmark
 
 os.system('cls')
 
-def check_GPU():
-	return tf.config.list_physical_devices('GPU')
-
-class BlazePose:
+class Pose:
 	def __init__(self):
-		if not os.path.exists('Model/blazepose'):
-			import tensorflow_hub as hub
-			#Fuck This BS
-			tf.saved_model.save(self.model, 'Model/blazepose')
-			del hub
-
-		else:
-			self.model = tf.saved_model.load('Model/blazepose')
+		self.model = BlazePoseLandmark()
+		det_checkpoint = torch.load('Model/blazepose_landmark.pth')
+		self.model.load_state_dict(det_checkpoint)
+		self.model.eval()
 
 	def preprocess(self, img):
-		img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-		in_tensor = tf.image.resize_with_pad(tf.expand_dims(img, axis=0), 256,256)
-		in_tensor = tf.cast(in_tensor, dtype=tf.float32)
-		return in_tensor
+		transform = T.Compose([T.ToTensor(), T.Resize((256,256)), T.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5])])
 
-	def process(self, in_tensor):
-		return self.model(in_tensor)['output_0'].numpy()
+		return transform(img).insqueeze(0)
+
+	def process(self, tensor):
+		with torch.no_grad():
+			landmarks = model(tensor)
+			print(landmarks)
+
+		return landmarks

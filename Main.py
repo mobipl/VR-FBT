@@ -24,7 +24,7 @@ def startup_cam(indices, fps):
 	return CamDict, CamConfig
 
 def startup_BlazePose():
-	return Tracking.BlazePose()
+	return Tracking.Pose()
 
 def startup_profile(name):
 	data = get_profile(name)
@@ -98,7 +98,6 @@ class CLI(CLIKit.CLIBaseClass):
 		profile_data = startup_profile(self.CurrentProfile)
 
 		self.rich.print(f'[#808080]Running profile: {self.CurrentProfile}\nMode: {profile_data['tracking']['mode']}\nFPS: {self.settings['fps']}')
-		self.rich.print(f'GPU: {Tracking.check_GPU()}')
 
 		CamDict, CamCon = startup_cam(profile_data['camera']['cam-index'], self.settings['fps'])
 		BlazePose = startup_BlazePose()
