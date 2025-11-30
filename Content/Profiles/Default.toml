@@ -9,8 +9,7 @@ show-output=true
 [tracking]
 mode="single"
 smooth=true
-extra-keypoints=false
-Joint-Map = 'VRCHAT'
+Joint-Map = 'FULLMAP'
 
 [misc]
 joy-con-remote=false

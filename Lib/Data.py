@@ -12,6 +12,12 @@ class keypoint:
 
 	def append_history(self):
 		self.his.append(self.pos)
+		if len(self.his) > 15:
+			self.his = self.his[1:]
+
+	def update(self, pos, vis):
+		self.pos = List(pos)
+		self.vis = vis
 
 #____wrappers____
 def get_Joint_Map(name, Json_lib):
@@ -65,3 +71,18 @@ def legendre_highpass_o2(x, cutoff, fs):
 			out[i] = a0*x[i] + a1*x[i-1] - b1*out[i-1]
 		else:
 			out[i] = (a0*x[i] + a1*x[i-1] - a0*x[i-2] - b1*out[i-1] - b2*out[i-2])
+
+#____Landmark-Mapping____
+class Map:
+	def __init__(self, Joint_Map):
+		self.JMap = Joint_Map
+		self.KeyPoints = {}
+		for key in self.JMap['KeyPoints']:
+			self.KeyPoints[key] = keypoint([0,0,0], 0.0)
+
+	def Update(self, LandmarkList):
+		for key in self.JMap['KeyPoints']:
+			Pos, Vis = LandmarkList[self.JMap[key]]
+			self.KeyPoints[key].update(Pos, Vis)
+
+			self.KeyPoints[key].append_history()
