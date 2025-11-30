@@ -37,11 +37,17 @@ def startup_profile(name):
 	data = get_profile(name)
 	return data
 
+def startup_Map(name):
+	JMap = Data.get_Joint_Map(name, Json)
+	Map = Data.Map(JMap)
+	return Map
+
 class FBT_loop:
-	def __init__(self, CamDict, CamCon, BlazePose, profile, settings):
+	def __init__(self, CamDict, CamCon, BlazePose, Map, profile, settings):
 		self.CamDict = CamDict
 		self.CamCon = CamCon
 		self.Pose = BlazePose
+		self.Map = Map
 		self.profile = profile
 		self.settings = settings
 
@@ -50,17 +56,25 @@ class FBT_loop:
 		thr.Thread(target=self._loop_, daemon=True).start()
 
 	def _loop_(self):
-		cam = self.CamDict[0]
 		if self.profile['tracking']['mode'].upper() == 'SINGLE':
+			cam = self.CamDict[0]
 			while(self.running):
-				cam.retrive()
+				delta = 0
+				with Clock.delta.precClock() as d:
+					delta = d
+					cam.retrive()
 
-				img = cam._CC.SharedDict[str(cam._index)]
+					img = cam._CC.SharedDict[str(cam._index)]
 
-				tensor = self.Pose.preprocess(img)
-				score, landmarks, heatmap = self.Pose.process(tensor)
+					tensor = self.Pose.preprocess(img)
+					score, landmarks, heatmap = self.Pose.process(tensor)
 
-				landmark_list = landmarks.squeeze(0).detach().cpu().tolist()
+					landmark_list = landmarks.squeeze(0).detach().cpu().tolist()
+
+					self.Map.Update(landmark_list)
+
+				Clock.sleep(1/self.settings['fps'], delta)
+
 
 		elif self.profile['tracking']['mode'].upper() == 'MULTI':
 			pass
@@ -142,7 +156,9 @@ class CLI(CLIKit.CLIBaseClass):
 		CamDict, CamCon = startup_cam(profile_data['camera']['cam-index'], self.settings['fps'])
 		BlazePose = startup_BlazePose()
 
-		Loop = FBT_loop(CamDict, CamCon, BlazePose, profile_data, self.settings)
+		Map = startup_Map(profile_data['tracking']['joint-map'])
+
+		Loop = FBT_loop(CamDict, CamCon, BlazePose, Map, profile_data, self.settings)
 
 		input('\nTo stop press "Enter"')
 

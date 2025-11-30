@@ -82,7 +82,7 @@ class Map:
 
 	def Update(self, LandmarkList):
 		for key in self.JMap['KeyPoints']:
-			Pos, Vis = LandmarkList[self.JMap[key]]
-			self.KeyPoints[key].update(Pos, Vis)
+			x,y,z, Vis = LandmarkList[self.JMap['KeyPoints'][key]]
+			self.KeyPoints[key].update([x,y,z], Vis)
 
 			self.KeyPoints[key].append_history()

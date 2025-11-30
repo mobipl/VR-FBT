@@ -9,7 +9,7 @@ show-output=true
 [tracking]
 mode="single"
 smooth=true
-Joint-Map = 'FULLMAP'
+joint-map='FULLMAP'
 
 [misc]
 joy-con-remote=false

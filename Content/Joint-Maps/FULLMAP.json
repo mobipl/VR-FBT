@@ -57,10 +57,7 @@
 		"R-Ankle":28,
 
 		"L-Foot":29,
-		"R-Foot":30,
-
-		"L-Heel":31,
-		"R-Heel":32
+		"R-Foot":30
 	},
 
 	"Position":{
@@ -71,7 +68,7 @@
 		"5":"L-Knee",
 		"6":"R-Knee",
 		"7":"L-Ankle",
-		"8":"R-Ankle",
+		"8":"R-Ankle"
 	},
 	"Rotation":{
 		"1":["F",["L-Shoulder","R-Shoulder"]],
@@ -80,7 +77,7 @@
 		"4":null,
 		"5":null,
 		"6":null,
-		"7":["L-Heel","L-Foot"],
-		"8":["R-Heel","R-Foot"]
+		"7":["L-Ankle","L-Foot"],
+		"8":["R-Ankle","R-Foot"]
 	}
 }

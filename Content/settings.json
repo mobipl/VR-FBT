@@ -1,5 +1,5 @@
 {
-	"fps": 45,
+	"fps": 30,
 
 	"TCP_server":false,
 	"UDP_server":false,
