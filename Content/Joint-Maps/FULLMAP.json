@@ -1,0 +1,86 @@
+{
+	"Settings":{
+		"Fuse-Shoulder-2-Chest":true,
+		"Fuse-Hip-2-Mid-Hip":true,
+
+		"Forward-Flag":"F",
+
+		"Correct":{
+			"Chest":[0,-0.5,0],
+			"Mid-Hip":[0,0.3,0]
+		}
+	},
+
+	"KeyPoints":{
+		"Nose":0,
+
+		"L-Eye-Inn":1,
+		"L-Eye":2,
+		"L-Eye-Out":3,
+
+		"R-Eye-Inn":4,
+		"R-Eye":5,
+		"R-Eye-Out":6,
+
+		"L-Ear":7,
+		"R-Ear":8,
+
+		"L-Mouth":9,
+		"R-Mouth":10,
+
+
+		"L-Shoulder":11,
+		"R-Shoulder":12,
+
+		"L-Elbow":13,
+		"R-Elbow":14,
+
+		"L-Wrist":15,
+		"R-Wrist":16,
+
+		"L-Pinky":17,
+		"R-Pinky":18,
+
+		"L-Index":19,
+		"R-Index":20,
+
+		"L-Thumb":21,
+		"R-Thumb":22,
+
+		"L-Hip":23,
+		"R-Hip":24,
+
+		"L-Knee":25,
+		"R-Knee":26,
+
+		"L-Ankle":27,
+		"R-Ankle":28,
+
+		"L-Foot":29,
+		"R-Foot":30,
+
+		"L-Heel":31,
+		"R-Heel":32
+	},
+
+	"Position":{
+		"1":"Chest",
+		"2":"Mid-Hip",
+		"3":"L-Elbow",
+		"4":"R-Elbow",
+		"5":"L-Knee",
+		"6":"R-Knee",
+		"7":"L-Ankle",
+		"8":"R-Ankle",
+	},
+	"Rotation":{
+		"1":["F",["L-Shoulder","R-Shoulder"]],
+		"2":["F",["L-Hip","R-Hip"]],
+		"3":null,
+		"4":null,
+		"5":null,
+		"6":null,
+		"7":["L-Heel","L-Foot"],
+		"8":["R-Heel","R-Foot"]
+	}
+}
