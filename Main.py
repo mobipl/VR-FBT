@@ -1,5 +1,12 @@
 from Lib import *
 import os
+import threading as thr
+
+#____Err____
+class Err:
+	class ProfileError(Exception):
+		def __init__(self, msg='Invalid Profile Data'):
+			super().__init__(msg)
 
 #____wrappers____
 def get_profile(name):
@@ -29,6 +36,39 @@ def startup_BlazePose():
 def startup_profile(name):
 	data = get_profile(name)
 	return data
+
+class FBT_loop:
+	def __init__(self, CamDict, CamCon, BlazePose, profile, settings):
+		self.CamDict = CamDict
+		self.CamCon = CamCon
+		self.Pose = BlazePose
+		self.profile = profile
+		self.settings = settings
+
+		self.running = True
+
+		thr.Thread(target=self._loop_, daemon=True).start()
+
+	def _loop_(self):
+		cam = self.CamDict[0]
+		if self.profile['tracking']['mode'].upper() == 'SINGLE':
+			while(self.running):
+				cam.retrive()
+
+				img = cam._CC.SharedDict[str(cam._index)]
+
+				tensor = self.Pose.preprocess(img)
+				score, landmarks, heatmap = self.Pose.process(tensor)
+
+				landmark_list = landmarks.squeeze(0).detach().cpu().tolist()
+
+		elif self.profile['tracking']['mode'].upper() == 'MULTI':
+			pass
+
+		else:
+			raise Err.ProfileError()
+
+
 
 #____Shutdown____
 def shutdown_cam(CamDict, CamConfig):
@@ -69,7 +109,7 @@ class CLI(CLIKit.CLIBaseClass):
 
 		self.CurrentProfile = self.settings['default_profile']
 
-		self.rich.print(f'[red]{logo}\n\n[green]Type "help" for help | WIP')
+		self.rich.print(f'[red]{logo}\n\n[green]Type "help" for help | [WIP]')
 
 	def cmd_version(self, msg):
 		"""Returns the current version."""
@@ -102,11 +142,20 @@ class CLI(CLIKit.CLIBaseClass):
 		CamDict, CamCon = startup_cam(profile_data['camera']['cam-index'], self.settings['fps'])
 		BlazePose = startup_BlazePose()
 
+		Loop = FBT_loop(CamDict, CamCon, BlazePose, profile_data, self.settings)
+
 		input('\nTo stop press "Enter"')
 
 		self.rich.print('\n[yellow]Full-Body-Tracking Shutdown...')
+
+		Loop.running = False
+		Clock.time.sleep(0.1)
+
+		del Loop
+
 		shutdown_cam(CamDict, CamCon)
 		shutdown_BlazePose(BlazePose)
+
 		del profile_data
 
 
