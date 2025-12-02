@@ -4,4 +4,5 @@ opencv-python
 rich
 pywin32
 numba
-torch-directml
+torch-directml==0.2.5.dev240914
+python-osc
