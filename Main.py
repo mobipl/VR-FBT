@@ -58,6 +58,12 @@ class FBT_loop:
 	def _loop_(self):
 		if self.profile['tracking']['mode'].upper() == 'SINGLE':
 			cam = self.CamDict[0]
+			try:
+				cam.retrive()
+			except AsyncCam.AsyncCamError as e:
+				print(e)
+				self.running = False
+
 			while(self.running):
 				delta = 0
 				with Clock.delta.precClock() as d:
@@ -160,7 +166,11 @@ class CLI(CLIKit.CLIBaseClass):
 
 		Loop = FBT_loop(CamDict, CamCon, BlazePose, Map, profile_data, self.settings)
 
-		input('\nTo stop press "Enter"')
+		Clock.time.sleep(0.2)
+		if Loop.running:
+			input('\nTo stop press "Enter"')
+		else:
+			self.rich.print('[red]\nFalied to start')
 
 		self.rich.print('\n[yellow]Full-Body-Tracking Shutdown...')
 

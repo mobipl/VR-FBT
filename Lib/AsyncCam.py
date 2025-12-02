@@ -42,7 +42,7 @@ class Camera:
 					time.sleep(self._CC.FPS)
 
 				except cv2.error:
-					self.cap = cv2.VideoCapture(self._index, cv2.CAP_DSHOW)
+					self.cap = cv2.VideoCapture(self._index)
 					self._RC += 1
 
 					if self._RC > 3:
@@ -55,7 +55,10 @@ class Camera:
 		def retrive(self):
 			with self._CC.Lock:
 				_, frame = self.cap.retrieve()
-				self._CC.SharedDict[str(self._index)] = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+				try:
+					self._CC.SharedDict[str(self._index)] = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+				except cv2.error:
+					raise AsyncCamError(f'No Camera At Index {self._index}')
 
 
 class Scale:

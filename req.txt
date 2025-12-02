@@ -1,0 +1,7 @@
+torch==2.4.1
+torchvision
+opencv-python
+rich
+pywin32
+numba
+torch-directml
