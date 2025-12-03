@@ -72,6 +72,10 @@ class FBT_loop:
 
 					img = cam._CC.SharedDict[str(cam._index)]
 
+					if self.profile['camera']['show-output']:
+						AsyncCam.cv2.imshow('output', img)
+						AsyncCam.cv2.waitKey(1)
+
 					tensor = self.Pose.preprocess(img)
 					score, landmarks, heatmap = self.Pose.process(tensor)
 
