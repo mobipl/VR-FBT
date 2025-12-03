@@ -6,3 +6,4 @@ pywin32
 numba
 torch-directml==0.2.5.dev240914
 python-osc
+toml
