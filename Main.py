@@ -156,6 +156,11 @@ class CLI(CLIKit.CLIBaseClass):
 		else:
 			self.rich.print(f'[red]No Profile {name}')
 
+	def cmd_restart(self, msg):
+		"""Restarts the program."""
+		os.system('restart.bat py')
+		quit()
+
 	def cmd_start(self, msg):
 		"""Starts the full body tracking."""
 		self.rich.print('[yellow]Full-Body-Tracking Startup...')
