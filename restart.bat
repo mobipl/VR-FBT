@@ -8,5 +8,6 @@ timeout 5
 
 cls
 
-if "%1"=="py" python Main.py
-if "%1"=="exe" Main.exe
+if "%1"=="py" start Main.py
+
+if "%1"=="exe" start Main.exe

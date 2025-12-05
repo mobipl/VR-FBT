@@ -1,5 +1,5 @@
 from Lib import *
-import os
+import os, sys
 import threading as thr
 
 #____Err____
@@ -85,6 +85,8 @@ class FBT_loop:
 
 				Clock.sleep(1/self.settings['fps'], delta)
 
+			AsyncCam.cv2.destroyAllWindows()
+
 
 		elif self.profile['tracking']['mode'].upper() == 'MULTI':
 			pass
@@ -98,11 +100,6 @@ class FBT_loop:
 def shutdown_cam(CamDict, CamConfig):
 	CamConfig.Stop = True
 	Clock.time.sleep(0.1)
-	del CamDict
-	del CamConfig
-
-def shutdown_BlazePose(BlazePose):
-	del BlazePose
 
 #____CLI____
 with open('Content/ASCII/Logo.txt', encoding='utf-8') as file:
@@ -159,7 +156,7 @@ class CLI(CLIKit.CLIBaseClass):
 	def cmd_restart(self, msg):
 		"""Restarts the program."""
 		os.system('restart.bat py')
-		quit()
+		quit(print('Ready to close'))
 
 	def cmd_start(self, msg):
 		"""Starts the full body tracking."""
@@ -189,8 +186,8 @@ class CLI(CLIKit.CLIBaseClass):
 		del Loop
 
 		shutdown_cam(CamDict, CamCon)
-		shutdown_BlazePose(BlazePose)
 
+		del BlazePose
 		del profile_data
 
 
