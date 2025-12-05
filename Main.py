@@ -40,14 +40,20 @@ def startup_profile(name):
 def startup_Map(name):
 	JMap = Data.get_Joint_Map(name, Json)
 	Map = Data.Map(JMap)
-	return Map
+	return Map, JMap
+
+def startup_OSC(ip, port):
+	Server = OSCKit.Server(ip, port=port)
+	return Server
 
 class FBT_loop:
-	def __init__(self, CamDict, CamCon, BlazePose, Map, profile, settings):
+	def __init__(self, CamDict, CamCon, BlazePose, Map, JMap, OSCServer, profile, settings):
 		self.CamDict = CamDict
 		self.CamCon = CamCon
 		self.Pose = BlazePose
 		self.Map = Map
+		self.JMap = JMap
+		self.Server = OSCServer
 		self.profile = profile
 		self.settings = settings
 
@@ -83,6 +89,29 @@ class FBT_loop:
 
 					self.Map.Update(landmark_list)
 
+					if self.JMap['Settings']['Fuse-Shoulder-2-Chest']:
+						self.Map.Fused['Chest'] = Data.keypoint(
+							Data.add(Data.midpoint(self.Map.KeyPoints['L-Shoulder'], self.Map.KeyPoints['R-Shoulder']), self.JMap['Settings']['Correct']['Chest']),
+							(self.Map.KeyPoints['L-Shoulder'].vis + self.Map.KeyPoints['R-Shoulder'].vis) / 2
+							)
+
+					if self.JMap['Settings']['Fuse-Hip-2-Mid-Hip']:
+						self.Map.Fused['Mid-Hip'] = Data.keypoint(
+							Data.add(Data.midpoint(self.Map.KeyPoints['L-Hip'], self.Map.KeyPoints['R-Hip']), self.JMap['Settings']['Correct']['Mid-Hip']),
+							(self.Map.KeyPoints['L-Hip'].vis + self.Map.KeyPoints['R-Hip'].vis) / 2
+							)
+
+					FullMap = self.Map.Fused | self.Map.KeyPoints
+
+					for TID in self.JMap['Position']:
+						KP = FullMap[self.JMap['Position'][TID]]
+
+						msg = OSCKit.Pharse.str(f'{OSCKit.Const.BasePath}{TID}/{OSCKit.Const.Type.Position}|{KP.pos}')
+						print(msg)
+
+						self.Server.Send(msg)
+
+
 				Clock.sleep(1/self.settings['fps'], delta)
 
 			AsyncCam.cv2.destroyAllWindows()
@@ -100,6 +129,9 @@ class FBT_loop:
 def shutdown_cam(CamDict, CamConfig):
 	CamConfig.Stop = True
 	Clock.time.sleep(0.1)
+
+def shutdown_OSC(Server):
+	Server.client._sock.close()
 
 #____CLI____
 with open('Content/ASCII/Logo.txt', encoding='utf-8') as file:
@@ -156,7 +188,7 @@ class CLI(CLIKit.CLIBaseClass):
 	def cmd_restart(self, msg):
 		"""Restarts the program."""
 		os.system('restart.bat py')
-		quit(print('Ready to close'))
+		quit(print('You can now close this window.'))
 
 	def cmd_start(self, msg):
 		"""Starts the full body tracking."""
@@ -168,9 +200,11 @@ class CLI(CLIKit.CLIBaseClass):
 		CamDict, CamCon = startup_cam(profile_data['camera']['cam-index'], self.settings['fps'])
 		BlazePose = startup_BlazePose()
 
-		Map = startup_Map(profile_data['tracking']['joint-map'])
+		Map, JMap = startup_Map(profile_data['tracking']['joint-map'])
 
-		Loop = FBT_loop(CamDict, CamCon, BlazePose, Map, profile_data, self.settings)
+		Server = startup_OSC(profile_data['server']['ip'], profile_data['server']['port'])
+
+		Loop = FBT_loop(CamDict, CamCon, BlazePose, Map, JMap, Server, profile_data, self.settings)
 
 		Clock.time.sleep(0.2)
 		if Loop.running:
@@ -186,6 +220,7 @@ class CLI(CLIKit.CLIBaseClass):
 		del Loop
 
 		shutdown_cam(CamDict, CamCon)
+		shutdown_OSC(Server)
 
 		del BlazePose
 		del profile_data

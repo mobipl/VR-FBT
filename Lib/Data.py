@@ -24,13 +24,19 @@ def get_Joint_Map(name, Json_lib):
 	return Json_lib.File.load(f'Content/Joint-Maps/{name}.json')
 
 #____Optimized-Math____
-@njit
 def midpoint(p1, p2):
 	mid = List()
 	mid.append((p1.pos[0]+p2.pos[0])/2)
 	mid.append((p1.pos[1]+p2.pos[1])/2)
 	mid.append((p1.pos[2]+p2.pos[2])/2)
 	return mid
+
+def add(vec1, vec2):
+	new_vec = List()
+	new_vec.append(vec1[0]+vec2[0])
+	new_vec.append(vec1[1]+vec2[1])
+	new_vec.append(vec1[2]+vec2[2])
+	return new_vec
 
 @njit
 def legendre_lowpass_o2(x, cutoff, fs):
@@ -76,6 +82,9 @@ def legendre_highpass_o2(x, cutoff, fs):
 class Map:
 	def __init__(self, Joint_Map):
 		self.JMap = Joint_Map
+
+		self.Fused = {}
+
 		self.KeyPoints = {}
 		for key in self.JMap['KeyPoints']:
 			self.KeyPoints[key] = keypoint([0,0,0], 0.0)
