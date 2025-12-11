@@ -1,5 +1,7 @@
 import socket
 import threading as thr
+import base64
+import hashlib
 
 class server:
 	HTTP_Mimick = None
@@ -74,3 +76,20 @@ class server:
 
 		for _ in range(concurrent):
 			thr.Thread(target=Handler, args=[self, server], daemon=True).start()
+
+	def Basic_WS_Mimick(self, conn, headers):
+		GUID = 'b984961c-bff9-49db-a62a-2a432aa94129'
+
+		key = headers['Sec-Websocket-Key']
+		accept_val = base64.b64encode(hashlib.sha1((key + GUID).encode()).digest()).decode()
+
+		res = (
+				'HTTP/1.1 101 Switching Protocols\r\n'
+				'Upgrade: websocket\r\n'
+				'Connection: Upgrade\r\n'
+				f'Sec-Websocket-Accept: {accept_val}'
+			)
+
+		def Handler(self, conn):
+			while(1):
+				pass
