@@ -1,38 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>VR-FBT Remote Camera Web Interface</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	<style>
-		body {
-			margin: 0px;
-			font-family: monospace;
-		}
-
-		header {
-			text-align: center;
-			font-size: 40px;
-		}
-
-		a {
-			font-size: 20px;
-			color: Red;
-		}
-
-	</style>
-
-	<script defer>
-
-	</script>
+	<title>RemoteCam</title>
 </head>
 <body>
+	<video id="video" autoplay></video>
+	<script defer>
+		const vid = document.getElementById('video');
 
-<header>
-	<h1>VR-FBT Camera</h1>
-</header>
+		navigator.mediaDevices.getUserMedia({video: true}).then(stream => {
+			video.srcObject = stream;
+		});
 
-<a href='/add'>Add New Device</a>
+		const ws = new WebSocket('ws://localhost:9100');
 
+		ws.onopen = () => console.log("Connected");
+		ws.onclose = () => console.log("Closed");
+		ws.onerror = (err) => console.error("WS error", err);
+
+
+		const canvas = document.createElement('canvas');
+		const ctx = canvas.getContext('2d')
+
+		vid.onloadedmetadata = () => {
+			setInterval(() => {
+				canvas.width = video.videoWidth;
+				canvas.heigth = video.videoHeigth;
+				ctx.drawImage(video, 0, 0);
+				canvas.toBlob(blob => {
+					blob.arrayBuffer().then(buf => {
+						ws.send(buf);
+					});
+				}, 'image/jpeg', 0.5)
+			}, 16)
+		}
+	</script>
 </body>
 </html>
